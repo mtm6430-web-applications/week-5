@@ -16,7 +16,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      todoList: ["Walk the dogs", "Go for a ride"]
+      todoList: []
     };
   },
   components: {
@@ -26,6 +26,10 @@ export default {
   methods: {
     appDeleteTodo(index) {
       this.todoList.splice(index, 1);
+      axios.put(
+        "https://sharmaa-vue-and-axios.firebaseio.com/data.json",
+        this.todoList
+      );
     },
     addTodo(todo) {
       this.todoList.push(todo);
@@ -43,6 +47,19 @@ export default {
           console.log(error);
         });
     }
+  },
+  created() {
+    axios
+      .get("https://sharmaa-vue-and-axios.firebaseio.com/data.json")
+      .then(response => {
+        console.log(response.data);
+        if (response.data) {
+          this.todoList = response.data;
+        }
+      })
+      .catch(error => {
+        console.log("There was an error in getting data: " + error.response);
+      });
   }
 };
 </script>
